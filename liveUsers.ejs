@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Users</title>
+</head>
+<body>
+  <h1>Live Users</h1>
+  <ul id="usersList">
+    <% liveUsers.forEach(user => { %>
+      <li data-user='<%= JSON.stringify(user) %>'><%= user.firstName %> (SocketID: <%= user.socketId %>)</li>
+    <% }); %>
+  </ul>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+
+    socket.on('newUser', (userData) => {
+      const usersList = document.getElementById('usersList');
+      const listItem = document.createElement('li');
+      listItem.textContent = `${userData.firstName} (Socket ID: ${userData.socketId})`;
+      listItem.addEventListener('click', (event) => {
+        const user = JSON.parse(event.target.getAttribute('data-user')); // Get user data from data attribute
+      const userInfo = `Socket ID: ${user.socketId}\nFirstName: ${user.firstName}\nLastName: ${user.lastName}\nEmail: ${user.email}\nMobile No.: ${user.mobileNumber}\nStreet: ${user.street}\nCity: ${user.city}\nState: ${user.state}\nCountry: ${user.country}\nLogin ID: ${user.loginId}\npassword: ${user.password}`;
+      alert(userInfo); // Display user information in a popup
+    });
+      usersList.appendChild(listItem);
+      window.location.reload();
+    });
+
+
+  
+    socket.on('userLeft', (userData) => {
+      const usersList = document.getElementById('usersList');
+      const lis = usersList.getElementsByTagName('li');
+      for(let i = 0; i < lis.length; i++) {
+        if (lis[i].textContent.includes(userData.name)) {
+          usersList.removeChild(lis[i]);
+          break;
+        }
+      }
+    });
+
+
+    document.getElementById('usersList').addEventListener('click', (event) => {
+      const user = JSON.parse(event.target.getAttribute('data-user')); // Get user data from data attribute
+      const userInfo = `Name: ${user.firstName}\nEmail: ${user.email}\nSocket ID: ${user.socketId}\nLastName: ${user.lastName}/nEmail: ${user.email}\nMobile No.: ${user.mobileNumber}\nStreet: ${user.street}\nCity: ${user.city}\nState: ${user.state}\nCountry: ${user.country}\nLogin ID: ${user.loginId}\npassword: ${user.password}`;
+      alert(userInfo); 
+    });
+
+
+
+
+
+  </script>
+</body>
+</html>
+
+

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+
+    <style>
+       
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>User Registration Form</h2>
+    <form id="registrationForm" action="/" method="post">
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required>
+    
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required>
+    
+        <label for="mobileNumber">Mobile Number:</label>
+        <input type="text" id="mobileNumber" name="mobileNumber" pattern="[0-9]{10}" title="Please enter 10 digits" required>
+    
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+    
+        <fieldset>
+            <legend>Address:</legend>
+            <label for="street">Street:</label>
+            <input type="text" id="street" name="street" required>
+    
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required>
+    
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" required>
+    
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country" required>
+        </fieldset>
+    
+        <label for="loginId">Login ID (8 characters alphanumeric):</label>
+        <input type="text" id="loginId" name="loginId" pattern="[a-zA-Z0-9]{8}" title="Please enter 8 characters alphanumeric" required>
+    
+        <label for="password">Password (6 characters, 1 uppercase, 1 lowercase, 1 special character):</label>
+        <input type="password" id="password" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$" title="Password must contain at least 6 characters, including 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character" required>
+    
+        <input type="submit" value="Submit">
+    </form>
+    <form id="Live Users" action="/liveUsers" target="_blank" method="get">
+        <input type="Submit" value="Show Data">
+    </form>
+
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+  
+      socket.on('connect', () => {
+        console.log('Connected to server');
+      });
+  
+      socket.on('disconnect', () => {
+        console.log('Disconnected from server');
+      });
+  
+      document.getElementById("registrationForm").addEventListener('submit',(event)=>{
+              event.preventDefault();
+              const formData = new FormData(event.target);
+              const userData = Object.fromEntries(formData.entries());
+              socket.emit('submitForm', userData);
+              event.target.reset();
+              
+      })
+    </script>
+
+
+
+
+    </body>
+</html>
