@@ -95,6 +95,7 @@
               const userData = Object.fromEntries(formData.entries());
               socket.emit('submitForm', userData);
               event.target.reset();
+              alert("Form Submitted Successfully");
               
       })
     </script>
